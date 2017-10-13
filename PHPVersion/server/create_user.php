@@ -1,6 +1,6 @@
 <?php
 
-require_once("credentials.php");
+require_once("../db/credentials.php");
 
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
