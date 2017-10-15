@@ -14,8 +14,8 @@
       $response['events'] = $events;
       $response['message'] = 'OK';
     } else {
-      $response['message'] = 'error';
-      $response['description'] = 'Could not retrieve the events';
+      $response['message'] = 'OK';
+      $response['description'] = 'Could not retrieve the events, or this user has no events...';
     }
   } else {
     $response['message'] = 'error';

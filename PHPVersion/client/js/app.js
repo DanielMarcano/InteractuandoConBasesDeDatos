@@ -129,7 +129,7 @@ class EventsManager {
     eliminarEvento(event, jsEvent){
 
       var form_data = new FormData();
-      form_data.append('id', event.id);
+      form_data.append('event_id', event.id);
       $.ajax({
         url: '../server/delete_event.php',
         dataType: "json",
@@ -139,10 +139,11 @@ class EventsManager {
         data: form_data,
         type: 'POST',
         success: (data) =>{
-          if (data.msg=="OK") {
+          if (data.message == "OK") {
             alert('Se ha eliminado el evento exitosamente');
           }else {
-            alert(data.msg);
+            alert(data.message);
+            alert(data.description);
           }
         },
         error: function(){

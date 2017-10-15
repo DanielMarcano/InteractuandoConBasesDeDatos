@@ -113,6 +113,13 @@ class ConnectDB {
     return $edited_events;
   }
 
+  function deleteEvent($event_id, $user_id) {
+    settype($event_id, 'int');
+    settype($user_id, 'int');
+    $sql = "DELETE FROM evento WHERE id = {$event_id} AND usuario_id = {$user_id} LIMIT 1";
+    return $this->runQuery($sql);
+  }
+
   function getUserId($username) {
     $sql = "SELECT id FROM usuario AS u WHERE u.email = '{$username}'";
     $user = $this->runQuery($sql);
