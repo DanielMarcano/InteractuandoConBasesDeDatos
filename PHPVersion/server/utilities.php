@@ -2,10 +2,6 @@
 
 session_start();
 
-function return_value($variable) {
-  if ($variable) {
-    return $variable;
-  } else {
-    return '';
-  }
+function add_quotes($str) {
+    return sprintf("'%s'", $str);
 }

@@ -71,14 +71,14 @@ class EventsManager {
 
     addEvent(){
       var form_data = new FormData();
-      form_data.append('titulo', $('#titulo').val());
+      form_data.append('title', $('#titulo').val());
       form_data.append('start_date', $('#start_date').val());
-      form_data.append('allDay', document.getElementById('allDay').checked);
+      form_data.append('full_day', document.getElementById('allDay').checked);
       if (!document.getElementById('allDay').checked) {
         form_data.append('end_date', $('#end_date').val());
         form_data.append('end_hour', $('#end_hour').val());
         form_data.append('start_hour', $('#start_hour').val());
-      }else {
+      } else {
         form_data.append('end_date', "");
         form_data.append('end_hour', "");
         form_data.append('start_hour', "");
@@ -114,9 +114,13 @@ class EventsManager {
 
           }else {
             alert(data.message);
+            alert(data.description);
+            console.log(data.query);
           }
         },
-        error: function(){
+        error: function(data){
+          console.log('error');
+          console.log(data);
           alert("error en la comunicación con el servidor");
         }
       });
@@ -164,12 +168,6 @@ class EventsManager {
       start_hour = start.substr(11,8);
       end_hour = end.substr(11,8);
 
-      alert(id);
-      alert(start_hour);
-      alert(start_date);
-      alert(end_date);
-      alert(end_hour);
-
       form_data.append('id', id);
       form_data.append('start_date', start_date);
       form_data.append('end_date', end_date);
@@ -185,10 +183,10 @@ class EventsManager {
         data: form_data,
         type: 'POST',
         success: (data) =>{
-          if (data.msg=="OK") {
+          if (data.message =="OK") {
             alert('Se ha actualizado el evento exitosamente');
           }else {
-            alert(data.msg);
+            alert(data.message);
           }
         },
         error: function(){
@@ -237,6 +235,8 @@ class EventsManager {
         }
       },
       error: (data) => {
+        console.log('error');
+        console.log(data);
         alert("Error en la comunicación con el servidor en checkLogin");
       }
     });
@@ -266,7 +266,7 @@ class EventsManager {
       dateFormat: "yy-mm-dd"
     });
     $('.timepicker').timepicker({
-      timeFormat: 'HH:mm',
+      timeFormat: 'H:i:s',
       interval: 30,
       minTime: '5',
       maxTime: '23:30',

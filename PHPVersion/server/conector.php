@@ -50,14 +50,17 @@ class ConnectDB {
     return $this->runQuery($sql);
   }
 
-  function addEvent($event) {
+  function createEvent($event) {
 
     $event_keys = array_keys($event);
     $event_keys = implode(', ', $event_keys);
 
     $event_values = implode(', ', $event);
 
-    $sql = "INSERT INTO evento ({$event_keys}) VALUES ()";
+    $sql = "INSERT INTO evento ({$event_keys}) VALUES ({$event_values})";
+
+    // return $sql;
+    return $this->runQuery($sql);
   }
 
   function findEvents($username) {
@@ -110,7 +113,7 @@ class ConnectDB {
     return $edited_events;
   }
 
-  function checkUser($username) {
+  function getUserId($username) {
     $sql = "SELECT id FROM usuario AS u WHERE u.email = '{$username}'";
     $user = $this->runQuery($sql);
     if ($user->num_rows) {
@@ -119,6 +122,11 @@ class ConnectDB {
     } else {
       return false;
     }
+  }
+
+  function checkUser($username) {
+    $sql = "SELECT * FROM usuario AS u WHERE u.email = '{$username}'";
+    return $this->runQuery($sql);
   }
 
 }

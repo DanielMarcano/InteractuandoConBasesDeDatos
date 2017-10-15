@@ -14,7 +14,8 @@ if (isset($_SESSION['username'])) {
 
     $user = $mysqli->checkUser($username);
     $user = $user->fetch_assoc();
-    if ($user['email'] == $username) {
+
+    if (isset($user['email'])) {
       $response['message'] = 'OK';
     } else {
       $response['message'] = 'error';
