@@ -12,8 +12,7 @@ if (isset($_SESSION['username'])) {
 
   if ($mysqli_response == 'OK') {
 
-    $user = $mysqli->checkUser($username);
-    $user = $user->fetch_assoc();
+    $user = $mysqli->getUser($username);
 
     if (isset($user['email'])) {
       $response['message'] = 'OK';

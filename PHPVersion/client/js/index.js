@@ -27,16 +27,16 @@ class Login {
       contentType: false,
       data: form_data,
       type: 'POST',
-      success: (php_response) => {
-        if (php_response.msg == "OK") {
+      success: (data) => {
+        if (data.message == "OK") {
           window.location.href = 'main.html';
         } else {
-          alert(php_response.msg);
+          alert(data.description);
         }
       },
-      error: (php_response) => {
+      error: (data) => {
         alert("Error en la comunicación con el servidor");
-        console.log(php_response);
+        console.log(data);
       }
     });
   }

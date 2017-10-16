@@ -36,7 +36,7 @@ function create_users($users) {
     $full_name = sanitize_var($user['full_name']);
     $pwd = password_hash(sanitize_var($user['pwd']), PASSWORD_DEFAULT);
     $birth_date = sanitize_var($user['birth_date']);
-    $sql = "INSERT INTO usuario (email, full_name, pwd, birth_date) VALUES ('{$email}', '{$full_name}', '{$pwd}', '{$birth_date}')";
+    $sql = "INSERT INTO usuarios (email, full_name, pwd, birth_date) VALUES ('{$email}', '{$full_name}', '{$pwd}', '{$birth_date}')";
     $result = $mysqli->query($sql);
     if (!$result) {
       echo nl2br("No se ha podido añadir el usuario número {$key}... \n\n");

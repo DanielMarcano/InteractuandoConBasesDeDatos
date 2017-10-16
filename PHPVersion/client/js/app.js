@@ -5,38 +5,9 @@ function hasNumbers(t) {
   return regex.test(t);
 }
 
-var myEvent;
 class EventsManager {
-  // constructor() {
-  //
-  //   this.obtenerDataInicial();
-  // }
 
-  obtenerDataInicial() {
-    let url = '../server/get_events.php';
-    $.ajax({
-      url: url,
-      dataType: "json",
-      cache: false,
-      processData: false,
-      contentType: false,
-      type: 'GET',
-      success: (data) => {
-        if (data.message == 'OK') {
-          this.poblarCalendario(data.events);
-        } else {
-          alert(data.description);
-        }
-      },
-      error: function(data){
-        console.log("Error in obtenerDataInicial");
-        console.log(data);
-      }
-    });
-
-  }
-
-  poblarCalendario(eventos) {
+  poblarCalendario() {
     $('.calendario').fullCalendar({
       header: {
         left: 'prev,next today',
@@ -56,7 +27,25 @@ class EventsManager {
       eventResize: (event) => {
         this.updateEvent(event);
       },
-      events: eventos,
+      events: {
+        url: "../server/get_events.php",
+        dataType: "json",
+        cache: false,
+        processData: false,
+        contentType: false,
+        type: 'GET',
+        success: (data) => {
+          if (data.message == 'OK') {
+            return data.events;
+          } else {
+            alert(data.description);
+          }
+        },
+        error: function(data){
+          console.log("Error trying to fetch all the events");
+          console.log(data);
+        }
+      },
       eventDragStart: (event,jsEvent) => {
         $('.delete-btn').find('img').attr('src', "img/trash-open.png");
         $('.delete-btn').css('background-color', '#a70f19');
@@ -76,9 +65,9 @@ class EventsManager {
 
         }
       });
-    }
+    } // end of poblarCalendario
 
-    addEvent(){
+    addEvent(eventManager){
       var form_data = new FormData();
       form_data.append('title', $('#titulo').val());
       form_data.append('start_date', $('#start_date').val());
@@ -103,25 +92,8 @@ class EventsManager {
         success: (data) =>{
           if (data.message=="OK") {
             alert('Se ha añadido el evento exitosamente');
-            if (document.getElementById('allDay').checked) {
-              $('.calendario').fullCalendar('renderEvent', {
-                title: $('#titulo').val(),
-                start: $('#start_date').val(),
-                allDay: true
-              });
-            }else {
-              $('.calendario').fullCalendar('renderEvent', {
-                title: $('#titulo').val(),
-                start: $('#start_date').val()+" "+$('#start_hour').val(),
-                allDay: false,
-                end: $('#end_date').val()+" "+$('#end_hour').val()
-              });
-            }
-
-
-
-
-          }else {
+            $('.calendario').fullCalendar('refetchEvents');
+          } else {
             alert(data.message);
             alert(data.description);
             console.log(data.query);
@@ -133,7 +105,7 @@ class EventsManager {
           alert("error en la comunicación con el servidor");
         }
       });
-    }
+    } // end of addEvent
 
     eliminarEvento(event, jsEvent){
 
@@ -162,9 +134,10 @@ class EventsManager {
       });
       $('.delete-btn').find('img').attr('src', "img/trash.png");
       $('.delete-btn').css('background-color', '#8B0913');
-    }
+    } // end of eliminarEvento
 
     updateEvent(event) {
+
       let id = event.id,
       start = $.fullCalendar.moment(event.start).format('YYYY-MM-DD HH:mm:ss'),
       end = $.fullCalendar.moment(event.end).format('YYYY-MM-DD HH:mm:ss'),
@@ -174,8 +147,6 @@ class EventsManager {
       start_hour,
       end_hour;
       var full_day;
-
-      // myEvent = event;
 
         start_date = start.substr(0,10);
         end_date = end.substr(0,10);
@@ -217,7 +188,7 @@ class EventsManager {
           alert("error en la comunicación con el servidor en updateEvent");
         }
       });
-    }
+    } // end of updateEvent
   }
 
   /* End of EventsManager */
@@ -229,12 +200,12 @@ class EventsManager {
     var eventManager = new EventsManager();
 
     checkLogin(function() {
-      eventManager.obtenerDataInicial();
+      eventManager.poblarCalendario();
     });
 
     $('form').submit(function(event){
       event.preventDefault();
-      eventManager.addEvent();
+      eventManager.addEvent(eventManager);
     });
 
     $('#logout').click(function() {
@@ -264,7 +235,7 @@ class EventsManager {
         alert("Error en la comunicación con el servidor en checkLogin");
       }
     });
-  }
+  } // end of checkLogin
 
   function logOut() {
     $.ajax({
@@ -282,7 +253,7 @@ class EventsManager {
         alert("Error when trying to log out");
       }
     });
-  }
+  } // end of logOut
 
   function initForm(){
     $('#start_date, #titulo, #end_date').val('');
@@ -307,4 +278,4 @@ class EventsManager {
         $('.timepicker, #end_date').removeAttr("disabled");
       }
     });
-  }
+  } // end of initForm

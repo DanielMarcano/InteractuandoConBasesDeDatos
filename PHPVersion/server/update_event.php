@@ -28,14 +28,11 @@
     $event['usuario_id'] = $mysqli->getUserId($_SESSION['username']);
 
     if($mysqli->updateEvent($event)) {
-      // $response['sql'] = $mysqli->updateEvent($event);
-      // $response['sql'] = $event;
       $response['message'] = 'OK';
     } else {
       $response['message'] = 'error';
       $response['description'] = 'Could not update the event';
     }
-
 
   } else {
     $response['message'] = 'error';

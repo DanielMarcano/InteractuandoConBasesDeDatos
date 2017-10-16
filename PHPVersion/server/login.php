@@ -1,37 +1,40 @@
 <?php
-session_start();
 
-require_once("../db/credentials.php");
+require_once('utilities.php');
+require_once("conector.php");
 
 function is_set($variable) {
   return isset($_POST[$variable]) ? $_POST[$variable] : '';
 }
 
-$username = is_set('username');
-$password = is_set('password');
+$username = isset($_POST['username']) ? $_POST['username'] : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
 
-$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+$mysqli = new ConnectDB();
+$mysqli_response = $mysqli->initConnection('nextu_calendar');
 
-if ($mysqli->connect_errno) {
-  $response['message'] = 'Error en la conexión con la base de datos';
-}
+if ($mysqli_response == 'OK') {
+  $user = $mysqli->getUser($username);
 
-function find_user($email) {
-  global $mysqli;
-  $sql = "SELECT * FROM usuario WHERE email = '{$email}'";
-  $user = $mysqli->query($sql);
-  return $user->fetch_assoc();
-}
+  if ($user) {
 
-$user = find_user($username);
+    if (password_verify($password, $user['pwd'])) {
+      $_SESSION['username'] = $user['email'];
+      $response['message'] = 'OK';
+    } else {
+      $response['message'] = 'error';
+      $response['description'] = 'Incorrect email or password';
+    }
 
-if (password_verify($password, $user['pwd'])) {
-  $_SESSION['username'] = $user['email'];
-  $response['msg'] = 'OK';
-  $response['username'] = $user['email'];
+  } else {
+    $response['message'] = 'error';
+    $response['description'] = 'Could not find the user';
+  }
 
 } else {
-  $response['msg'] = 'Incorrect email or password';
+  $response['message'] = 'error';
+  $response['description'] = 'Could not connect to the db';
 }
+
 
 echo json_encode($response);

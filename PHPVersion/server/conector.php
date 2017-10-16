@@ -42,7 +42,7 @@ class ConnectDB {
 
     $event_values = implode(', ', $event);
 
-    $sql = "INSERT INTO evento ({$event_keys}) VALUES ({$event_values})";
+    $sql = "INSERT INTO eventos ({$event_keys}) VALUES ({$event_values})";
 
     return $this->run_query($sql);
   }
@@ -56,7 +56,7 @@ class ConnectDB {
     e.end_date,
     e.end_hour,
     e.full_day
-    FROM evento AS e LEFT JOIN usuario AS u ON e.usuario_id = u.id WHERE (u.email = '{$username}');";
+    FROM eventos AS e LEFT JOIN usuarios AS u ON e.usuario_id = u.id WHERE (u.email = '{$username}');";
 
     $events = $this->run_query($sql);
 
@@ -116,7 +116,7 @@ class ConnectDB {
 
     $event_values = implode(', ', $event_values);
 
-    $sql = "UPDATE evento SET {$event_values} WHERE usuario_id = {$event['usuario_id']} AND id = {$event['id']}";
+    $sql = "UPDATE eventos SET {$event_values} WHERE usuario_id = {$event['usuario_id']} AND id = {$event['id']}";
 
     // return $sql;
     return $this->run_query($sql);
@@ -125,12 +125,12 @@ class ConnectDB {
   function deleteEvent($event_id, $user_id) {
     settype($event_id, 'int');
     settype($user_id, 'int');
-    $sql = "DELETE FROM evento WHERE id = {$event_id} AND usuario_id = {$user_id} LIMIT 1";
+    $sql = "DELETE FROM eventos WHERE id = {$event_id} AND usuario_id = {$user_id} LIMIT 1";
     return $this->run_query($sql);
   }
 
   function getUserId($username) {
-    $sql = "SELECT id FROM usuario AS u WHERE u.email = '{$username}'";
+    $sql = "SELECT id FROM usuarios AS u WHERE u.email = '{$username}'";
     $user = $this->run_query($sql);
     if ($user->num_rows) {
       $user = $user->fetch_assoc();
@@ -140,9 +140,14 @@ class ConnectDB {
     }
   }
 
-  function checkUser($username) {
-    $sql = "SELECT * FROM usuario AS u WHERE u.email = '{$username}'";
-    return $this->run_query($sql);
+  function getUser($username) {
+    $sql = "SELECT * FROM usuarios AS u WHERE u.email = '{$username}'";
+    $response = $this->run_query($sql);
+    if ($response->num_rows) {
+      return $response->fetch_assoc();
+    } else {
+      return false;
+    }
   }
 
 }
