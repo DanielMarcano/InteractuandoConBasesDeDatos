@@ -205,7 +205,11 @@ class EventsManager {
 
     $('form').submit(function(event){
       event.preventDefault();
-      eventManager.addEvent(eventManager);
+
+      if (checkForm()) {
+        eventManager.addEvent(eventManager);
+      }
+
     });
 
     $('#logout').click(function() {
@@ -279,3 +283,11 @@ class EventsManager {
       }
     });
   } // end of initForm
+
+  function checkForm() {
+    if ($('#titulo').val() != '' && $('#start_date') != '') {
+      return true;
+    } else {
+      return false;
+    }
+  }

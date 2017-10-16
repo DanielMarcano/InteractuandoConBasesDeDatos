@@ -18,7 +18,7 @@ class ConnectDB {
     return $this->connection->query($query);
   }
 
-  function initConnection($nombre_db){
+  function initConnection($nombre_db) {
     $this->connection = new mysqli($this->host, $this->user, $this->password, $nombre_db);
     if ($this->connection->connect_error) {
       return "Error:" . $this->connection->connect_error;
@@ -27,11 +27,11 @@ class ConnectDB {
     }
   }
 
-  function getConexion(){
+  function getConexion() {
     return $this->connection;
   }
 
-  function closeConnection(){
+  function closeConnection() {
     $this->connection->close();
   }
 
