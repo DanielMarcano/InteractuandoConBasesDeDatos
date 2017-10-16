@@ -11,7 +11,7 @@ $mysqli_response = $mysqli->initConnection('nextu_calendar');
 
 if ($mysqli_response == 'OK') {
 
-  $user_id = $mysqli->getUserId();
+  $user_id = $mysqli->getUserId($username);
 
   if($mysqli->deleteEvent($event_id, $user_id)) {
     $response['message'] = 'OK';

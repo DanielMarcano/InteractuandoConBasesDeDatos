@@ -1,5 +1,11 @@
 /* Beginning of EventsManager */
 
+function hasNumbers(t) {
+  var regex = /\d/g;
+  return regex.test(t);
+}
+
+var myEvent;
 class EventsManager {
   // constructor() {
   //
@@ -45,6 +51,9 @@ class EventsManager {
       dragRevertDuration: 0,
       timeFormat: 'H:mm',
       eventDrop: (event) => {
+        this.updateEvent(event);
+      },
+      eventResize: (event) => {
         this.updateEvent(event);
       },
       events: eventos,
@@ -146,34 +155,45 @@ class EventsManager {
             alert(data.description);
           }
         },
-        error: function(){
+        error: function(data){
           alert("error en la comunicación con el servidor");
+          console.log(data);
         }
       });
       $('.delete-btn').find('img').attr('src', "img/trash.png");
       $('.delete-btn').css('background-color', '#8B0913');
     }
 
-    updateEvent(evento) {
-      let id = evento.id,
-      start = moment(evento.start).format('YYYY-MM-DD HH:mm:ss'),
-      end = moment(evento.end).format('YYYY-MM-DD HH:mm:ss'),
+    updateEvent(event) {
+      let id = event.id,
+      start = $.fullCalendar.moment(event.start).format('YYYY-MM-DD HH:mm:ss'),
+      end = $.fullCalendar.moment(event.end).format('YYYY-MM-DD HH:mm:ss'),
       form_data = new FormData(),
       start_date,
       end_date,
       start_hour,
       end_hour;
+      var full_day;
 
-      start_date = start.substr(0,10);
-      end_date = end.substr(0,10);
-      start_hour = start.substr(11,8);
-      end_hour = end.substr(11,8);
+      // myEvent = event;
+
+        start_date = start.substr(0,10);
+        end_date = end.substr(0,10);
+        start_hour = start.substr(11,8);
+        end_hour = end.substr(11,8);
+
+      if (!hasNumbers(end_date) && !hasNumbers(end_hour)) {
+        full_day = true;
+      } else {
+        full_day = false;
+      }
 
       form_data.append('id', id);
       form_data.append('start_date', start_date);
       form_data.append('end_date', end_date);
       form_data.append('start_hour', start_hour);
       form_data.append('end_hour', end_hour);
+      form_data.append('full_day', full_day);
 
       $.ajax({
         url: '../server/update_event.php',
@@ -188,9 +208,12 @@ class EventsManager {
             alert('Se ha actualizado el evento exitosamente');
           }else {
             alert(data.message);
+            alert(data.description);
           }
         },
-        error: function(){
+        error: function(data){
+          console.log('Error in updateEvent');
+          console.log(data);
           alert("error en la comunicación con el servidor en updateEvent");
         }
       });

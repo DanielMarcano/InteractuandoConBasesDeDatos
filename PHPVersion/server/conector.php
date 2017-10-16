@@ -14,7 +14,7 @@ class ConnectDB {
     $this->password = $password;
   }
 
-  private function runQuery($query) {
+  private function run_query($query) {
     return $this->connection->query($query);
   }
 
@@ -35,21 +35,6 @@ class ConnectDB {
     $this->connection->close();
   }
 
-  function newTable($table_name, $columns) {
-
-    $final_columns = [];
-
-    foreach ($columns as $key => $value) {
-      $final_columns[] = $key . ' ' . $value;
-    }
-
-    $columns = implode(', ', $final_columns);
-
-    $sql = "CREATE TABLE {$table_name} (${columns});";
-
-    return $this->runQuery($sql);
-  }
-
   function createEvent($event) {
 
     $event_keys = array_keys($event);
@@ -59,8 +44,7 @@ class ConnectDB {
 
     $sql = "INSERT INTO evento ({$event_keys}) VALUES ({$event_values})";
 
-    // return $sql;
-    return $this->runQuery($sql);
+    return $this->run_query($sql);
   }
 
   function findEvents($username) {
@@ -74,10 +58,9 @@ class ConnectDB {
     e.full_day
     FROM evento AS e LEFT JOIN usuario AS u ON e.usuario_id = u.id WHERE (u.email = '{$username}');";
 
-    $events = $this->runQuery($sql);
+    $events = $this->run_query($sql);
 
     if ($events->num_rows > 0) {
-      // echo var_dump($events);
       $edited_events = $this->prepareEvents($events);
       return $edited_events;
     } else {
@@ -106,23 +89,49 @@ class ConnectDB {
         $end_hour = $event['end_hour'];
         $edited_event['end'] = date('Y-m-d H:i:s', strtotime($end_date . ' ' . $end_hour));
       }
-      // echo var_dump($edited_event);
+
       $edited_events[] = $edited_event;
     }
 
     return $edited_events;
   }
 
+  function updateEvent($event) {
+
+    $event_values = [];
+
+    foreach ($event as $key => $value) {
+      if ($key != 'id' && $key != 'usuario_id') {
+
+        if (is_null($value)) {
+          $event_values[] = $key . ' = NULL';
+        } else {
+          $event_values[] = $key . ' = ' . $value;
+        }
+      }
+    }
+
+    settype($event['id'], 'int');
+    settype($event['usuario_id'], 'int');
+
+    $event_values = implode(', ', $event_values);
+
+    $sql = "UPDATE evento SET {$event_values} WHERE usuario_id = {$event['usuario_id']} AND id = {$event['id']}";
+
+    // return $sql;
+    return $this->run_query($sql);
+  }
+
   function deleteEvent($event_id, $user_id) {
     settype($event_id, 'int');
     settype($user_id, 'int');
     $sql = "DELETE FROM evento WHERE id = {$event_id} AND usuario_id = {$user_id} LIMIT 1";
-    return $this->runQuery($sql);
+    return $this->run_query($sql);
   }
 
   function getUserId($username) {
     $sql = "SELECT id FROM usuario AS u WHERE u.email = '{$username}'";
-    $user = $this->runQuery($sql);
+    $user = $this->run_query($sql);
     if ($user->num_rows) {
       $user = $user->fetch_assoc();
       return $user['id'];
@@ -133,7 +142,7 @@ class ConnectDB {
 
   function checkUser($username) {
     $sql = "SELECT * FROM usuario AS u WHERE u.email = '{$username}'";
-    return $this->runQuery($sql);
+    return $this->run_query($sql);
   }
 
 }
