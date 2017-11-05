@@ -20,19 +20,63 @@
     </div>
     <script src="js/vendor/jquery.js"></script>
     <script>
-        var nombreUsuario = $('#user')
-        var pass = $('#pass')
-        $('.loginButton').on('click', function(event) {
-            if (nombreUsuario.val() != "" && pass.val() != "") {
-                $.post('/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
-                    if (response == "Validado") {
-                        window.location.href = "http://localhost:3000/main.html"
-                    }
-                })
-            } else {
-                alert("Complete todos los campos")
-            }
-        })
+        // var nombreUsuario = $('#user')
+        // var pass = $('#pass')
+        // $('.loginButton').on('click', function(event) {
+        //     if (nombreUsuario.val() != "" && pass.val() != "") {
+        //         $.post('/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
+        //             if (response == "Validado") {
+        //                 window.location.href = "http://localhost:3000/main.html"
+        //             }
+        //         })
+        //     } else {
+        //         alert("Complete todos los campos")
+        //     }
+        // })
+        $(function(){
+          var l = new Login();
+        });
+
+
+        class Login {
+          constructor() {
+            this.submitEvent();
+          }
+
+          submitEvent(){
+            $('form').submit((event) => {
+              event.preventDefault();
+              this.sendForm();
+            });
+          }
+
+          sendForm(){
+            let form_data = new FormData();
+            form_data.append('username', $('#user').val());
+            form_data.append('password', $('#pass').val());
+            $.ajax({
+              url: '/login',
+              dataType: "json",
+              cache: false,
+              processData: false,
+              contentType: false,
+              data: form_data,
+              type: 'POST',
+              success: (data) => {
+                if (data.message == "OK") {
+                  window.location.href = 'main.html';
+                } else {
+                  alert(data.description);
+                }
+              },
+              error: (data) => {
+                alert("Error en la comunicación con el servidor");
+                console.log(data);
+              }
+            });
+          }
+        }
+
     </script>
   </body>
 </html>

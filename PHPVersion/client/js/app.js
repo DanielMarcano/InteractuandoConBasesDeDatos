@@ -28,7 +28,7 @@ class EventsManager {
         this.updateEvent(event);
       },
       events: {
-        url: "../server/get_events.php",
+        url: "/events/all",
         dataType: "json",
         cache: false,
         processData: false,
@@ -71,8 +71,8 @@ class EventsManager {
       var form_data = new FormData();
       form_data.append('title', $('#titulo').val());
       form_data.append('start_date', $('#start_date').val());
-      form_data.append('full_day', document.getElementById('allDay').checked);
-      if (!document.getElementById('allDay').checked) {
+      form_data.append('full_day', $('#allDay').prop('checked'));
+      if (!$('#allDay').prop('checked')) {
         form_data.append('end_date', $('#end_date').val());
         form_data.append('end_hour', $('#end_hour').val());
         form_data.append('start_hour', $('#start_hour').val());
@@ -96,7 +96,6 @@ class EventsManager {
           } else {
             alert(data.message);
             alert(data.description);
-            console.log(data.query);
           }
         },
         error: function(data){
