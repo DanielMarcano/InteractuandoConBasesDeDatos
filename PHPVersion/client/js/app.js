@@ -28,7 +28,7 @@ class EventsManager {
         this.updateEvent(event);
       },
       events: {
-        url: "/events/all",
+        url: "../server/get_events.php",
         dataType: "json",
         cache: false,
         processData: false,
