@@ -284,7 +284,7 @@ class EventsManager {
   } // end of initForm
 
   function checkForm() {
-    if ($('#titulo').val() != '' && $('#start_date') != '') {
+    if ($('#titulo').val() != '' && $('#start_date').val() != '') {
       return true;
     } else {
       return false;
