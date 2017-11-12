@@ -12,7 +12,7 @@ mongoose.createConnection('mongodb://localhost/NodeJSCalendar');
 app.use(session({
   secret: 'my secret',
   cookie: {
-    maxAge: 60000
+    maxAge: 120000
   }
 }))
 .use(bodyParser.json())

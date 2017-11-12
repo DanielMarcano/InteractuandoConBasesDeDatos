@@ -151,7 +151,7 @@ class EventManager {
         this.updateEvent(event);
       },
       events: {
-        url: "/users/all",
+        url: "/events",
         dataType: "json",
         cache: false,
         processData: false,
@@ -159,9 +159,10 @@ class EventManager {
         type: 'GET',
         success: (data) => {
           if (data.message == 'OK') {
+            console.log(data.events);
             return data.events;
           } else {
-            alert(data.description);
+            alert(data.message);
           }
         },
         error: function(data){
@@ -195,14 +196,15 @@ class EventManager {
   } // End of EventManager
 
   $(function(){
-    checkLogin();
+    // checkLogin();
+
     initForm();
 
     const eventManager = new EventManager();
 
-    // checkLogin(function() {
-    //   eventManager.poblarCalendario();
-    // });
+    checkLogin(function() {
+      eventManager.poblarCalendario();
+    });
 
     $('form').submit(function(event){
       event.preventDefault();
@@ -218,29 +220,29 @@ class EventManager {
     });
   });
 
-  function checkLogin(callback) {
-    $.ajax({
-      url: '/checkLogin',
-      dataType: "json",
-      cache: false,
-      processData: false,
-      contentType: false,
-      type: 'GET',
-      success: (data) => {
-        if (data.message == 'error') {
-          alert('You must log in before...');
-          window.location.href = 'index.html';
-        } else {
-          callback();
-        }
-      },
-      error: (data) => {
-        console.log('error');
-        console.log(data);
-        alert("Error en la comunicación con el servidor en checkLogin");
-      }
-    });
-  } // end of checkLogin
+  // function checkLogin(callback) {
+  //   $.ajax({
+  //     url: '/checkLogin',
+  //     dataType: "json",
+  //     cache: false,
+  //     processData: false,
+  //     contentType: false,
+  //     type: 'GET',
+  //     success: (data) => {
+  //       if (data.message == 'error') {
+  //         alert('You must log in before...');
+  //         window.location.href = 'index.html';
+  //       } else {
+  //         callback();
+  //       }
+  //     },
+  //     error: (data) => {
+  //       console.log('error');
+  //       console.log(data);
+  //       alert("Error en la comunicación con el servidor en checkLogin");
+  //     }
+  //   });
+  // } // end of checkLogin
 
   function logOut() {
     $.ajax({
@@ -263,7 +265,7 @@ class EventManager {
   function initForm(){
     $('#start_date, #titulo, #end_date').val('');
     $('#start_date, #end_date').datepicker({
-      dateFormat: "yy-mm-dd"
+      dateFormat: "mm-dd-yy"
     });
     $('.timepicker').timepicker({
       timeFormat: 'H:i:s',
@@ -286,19 +288,20 @@ class EventManager {
   }
 
   function checkForm() {
-    if ($('#titulo').val() != '' && $('#start_date') != '') {
+    if ($('#titulo').val() != '' && $('#start_date').val() != '') {
       return true;
     } else {
       return false;
     }
   }
 
-  function checkLogin() {
+  function checkLogin(callback) {
     $.get('/login', function(response) {
-      if (response != 'OK') {
+      if (response.message != 'OK') {
         alert(response.message);
+        window.location.href = 'index.html';
       } else {
-        alert('The user has logged in');
+        callback();
       }
     });
   }

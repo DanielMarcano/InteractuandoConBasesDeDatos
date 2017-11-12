@@ -26,10 +26,10 @@
         <div class="formTitle">Programar Evento</div>
         <div class="separator"></div>
         <div class="form-inputs">
-          <input type="text" id="titulo" placeholder="Nombre del evento"/>
-          <input type="text" id="start_date" placeholder="Fecha de inicio"/>
+          <input type="text" id="titulo" placeholder="Nombre del evento" required/>
+          <input type="text" id="start_date" placeholder="Fecha de inicio" required/>
           <div class="eventDuration">
-            <input type="checkbox" id="allDay" class="radio-input"/>
+            <input type="checkbox" id="allDay" class="radio-input" required/>
             <label class="duration-label" for="allDay">Día completo</label>
           </div>
           <input type="text" id="end_date" placeholder="Fecha fin"/>
@@ -51,7 +51,7 @@
     </div>
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/momentjs.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="js/vendor/fullcalendar.min.js"></script>
     <script src="js/vendor/jquery.timepicker.min.js"></script>
     <script src="js/main.js"></script>
