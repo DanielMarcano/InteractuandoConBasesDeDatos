@@ -96,6 +96,14 @@ Router.post('/events/new', function(req, res) {
   }
 })
 
+.get('/logout', function(req, res) {
+  req.session.destroy(function(err) {
+    res.json({
+      message: 'You have logged out successfully'
+    });
+  });
+})
+
 .get('/events', function(req, res) {
   var response = '';
   if (req.session.username) {
