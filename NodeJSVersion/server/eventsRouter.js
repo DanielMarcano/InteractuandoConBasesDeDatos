@@ -5,8 +5,62 @@ var assert = require('assert');
 var passwordHash = require('password-hash');
 var moment = require('moment');
 
-Router.put('/events/new', function(req, res) {
+Router.post('/events/new', function(req, res) {
+  console.log(req.body);
+  console.log(req.session.username);
+  User.findOne({username: req.session.username}, function(err, user) {
+    assert.equal(err, null);
+    var id = user._id;
+    var newEvent;
+    console.log(user);
 
+    if (req.body.fullDay) {
+      newEvent = new EventModel({
+        userId: id,
+        title: req.body.title,
+        startDate: req.body.startDate,
+        fullDay: req.body.fullDay
+      });
+      newEvent.save(function(err) {
+        var response = {};
+        if (err) {
+          console.log(err);
+          response = {
+            message: 'There was an error trying to add the new event...'
+          };
+        } else {
+          response = {
+            message: 'OK'
+          };
+        }
+        res.json(response);
+      });
+    } else {
+      newEvent = new EventModel({
+        userId: id,
+        title: req.body.title,
+        startDate: req.body.startDate,
+        startHour: req.body.startHour,
+        endDate: req.body.endDate,
+        endHour: req.body.endHour,
+        fullDay: req.body.fullDay
+      });
+      newEvent.save(function(err) {
+        var response = {};
+        if (err) {
+          console.log(err);
+          response = {
+            message: 'There was an error trying to add the new event...'
+          };
+        } else {
+          response = {
+            message: 'OK'
+          };
+        }
+        res.json(response);
+      });
+    }
+  });
 })
 
 .get('/events/delete/:id', function(req, res) {

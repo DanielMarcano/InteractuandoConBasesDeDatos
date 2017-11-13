@@ -35,41 +35,29 @@ class EventManager {
     $('.delete').css('background-color', '#8B0913');
   } // end of eliminarEvento
 
-  addEvent(eventManager){
-    var form_data = new FormData();
-    form_data.append('title', $('#titulo').val());
-    form_data.append('start_date', $('#start_date').val());
-    form_data.append('full_day', $('#allDay').prop('checked'));
+  addEvent() {
+    alert('entre aqui');
+    var eventData = {};
+    eventData.title = $('#titulo').val();
+    eventData.startDate = $('#start_date').val();
+    eventData.fullDay = $('#allDay').prop('checked');
     if (!$('#allDay').prop('checked')) {
-      form_data.append('end_date', $('#end_date').val());
-      form_data.append('end_hour', $('#end_hour').val());
-      form_data.append('start_hour', $('#start_hour').val());
+      eventData.endDate = $('#end_date').val();
+      eventData.endHour = $('#end_hour').val();
+      eventData.startHour = $('#start_hour').val();
     } else {
-      form_data.append('end_date', "");
-      form_data.append('end_hour', "");
-      form_data.append('start_hour', "");
+      eventData.end_date = "";
+      eventData.end_hour = "";
+      eventData.start_hour = "";
     }
-    $.ajax({
-      url: '/events/new',
-      dataType: "json",
-      cache: false,
-      processData: false,
-      contentType: false,
-      data: form_data,
-      type: 'POST',
-      success: (data) =>{
-        if (data.message=="OK") {
-          alert('Se ha añadido el evento exitosamente');
-          $('.calendario').fullCalendar('refetchEvents');
-        } else {
-          alert(data.message);
-          alert(data.description);
-        }
-      },
-      error: function(data){
-        console.log('error');
-        console.log(data);
-        alert("error en la comunicación con el servidor");
+
+    $.post('/events/new', eventData, function(response) {
+      // console.log(response);
+      if (response.message == 'OK') {
+        $('.calendario').fullCalendar('refetchEvents');
+        alert(response.message);
+      } else {
+        alert(response.message);
       }
     });
   } // end of addEvent
@@ -206,7 +194,7 @@ class EventManager {
       eventManager.poblarCalendario();
     });
 
-    $('form').submit(function(event){
+    $('#eventForm').submit(function(event){
       event.preventDefault();
 
       if (checkForm()) {

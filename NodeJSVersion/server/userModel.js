@@ -28,7 +28,8 @@ exports.User = User;
 var EventSchema = new Schema({
   userId: {
     type: Number,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   title: {
     type: String,
