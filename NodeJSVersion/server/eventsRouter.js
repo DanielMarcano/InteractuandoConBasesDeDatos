@@ -63,8 +63,19 @@ Router.post('/events/new', function(req, res) {
   });
 })
 
-.get('/events/delete/:id', function(req, res) {
+.delete('/event/:id', function(req, res) {
+  User.findOne({username: req.session.username}, function(err, user) {
+    assert.equal(err, null);
+    var id = user._id;
+    EventModel.findOneAndRemove({userId: id, _id: req.params.id}, function(err, myEvent) {
+      assert.equal(err, null);
+      response = {
+        message: 'OK'
+      };
+      res.json(response);
+    });
 
+  });
 })
 
 .post('/login', function(req, res) {
@@ -134,6 +145,7 @@ function prepareEvents(events) {
   var preparedEvents = [];
   events.forEach(function(event, index) {
     preparedEvent = {};
+    preparedEvent.id = event._id;
     preparedEvent.title = event.title;
     preparedEvent.fullDay = event.fullDay;
     if (event.fullDay) {

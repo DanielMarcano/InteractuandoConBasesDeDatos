@@ -7,17 +7,14 @@ function hasNumbers(t) {
 class EventManager {
 
   eliminarEvento(event, jsEvent){
-
-    var form_data = new FormData();
-    form_data.append('event_id', event.id);
     $.ajax({
-      url: '/events/delete/' + formData.get('event_id'),
+      url: '/event/' + event.id,
       dataType: "json",
       cache: false,
       processData: false,
       contentType: false,
-      data: form_data,
-      type: 'POST',
+      data: {},
+      type: 'DELETE',
       success: (data) =>{
         if (data.message == "OK") {
           alert('Se ha eliminado el evento exitosamente');
@@ -64,6 +61,8 @@ class EventManager {
 
   updateEvent(event) {
 
+    console.log(event);
+    console.log(event.id);
     let id = event.id,
     start = $.fullCalendar.moment(event.start).format('YYYY-MM-DD HH:mm:ss'),
     end = $.fullCalendar.moment(event.end).format('YYYY-MM-DD HH:mm:ss'),
