@@ -21,6 +21,5 @@ app.use(session({
 .use('/', Router);
 
 app.listen('8080', function() {
-  console.log('hehehe connected');
   console.log('Server is running on PORT 8080');
 });
