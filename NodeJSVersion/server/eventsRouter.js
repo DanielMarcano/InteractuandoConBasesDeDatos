@@ -78,6 +78,44 @@ Router.post('/events/new', function(req, res) {
   });
 })
 
+.put('/event/:id', function(req, res) {
+  User.findOne({username: req.session.username}, function(err, user) {
+    assert.equal(err, null);
+    var id = user._id;
+    EventModel.findOne({userId: id, _id: req.params.id}, function(err, myEvent) {
+      assert.equal(err, null);
+
+      console.log('This is supposed to be something...');
+      console.log(req.body);
+
+      myEvent.startDate = req.body.startDate;
+      myEvent.endDate = req.body.endDate;
+      myEvent.startHour = req.body.startHour;
+      myEvent.endHour = req.body.endHour;
+      myEvent.fullDay = req.body.fullDay;
+
+      console.log(myEvent);
+
+      myEvent.save(function(err) {
+        var response = {};
+
+        assert.equal(err, null);
+
+        response = {
+          message: 'OK',
+          description: 'The post was successfully updated!'
+        };
+
+        res.json(response);
+
+      });
+    });
+
+  });
+})
+
+
+
 .post('/login', function(req, res) {
   User.findOne({username: req.body.user}, function(err, user) {
     assert.equal(err, null);
@@ -149,13 +187,20 @@ function prepareEvents(events) {
     preparedEvent.title = event.title;
     preparedEvent.fullDay = event.fullDay;
     if (event.fullDay) {
-      preparedEvent.start = event.startDate;
+      if (event.startHour) {
+        startDateTime = new moment(event.startDate + ' ' + event.startHour).format("YYYY-MM-DD HH:mm:ss");
+        preparedEvent.start = startDateTime;
+      } else {
+        preparedEvent.start = event.startDate;
+      }
+
     } else {
       startDateTime = new moment(event.startDate + ' ' + event.startHour).format("YYYY-MM-DD HH:mm:ss");
       endDateTime = new moment(event.endDate + ' ' + event.endHour).format("YYYY-MM-DD HH:mm:ss");
       preparedEvent.start = startDateTime;
       preparedEvent.end = endDateTime;
     }
+    console.log(preparedEvent);
     preparedEvents.push(preparedEvent);
   });
   return preparedEvents;

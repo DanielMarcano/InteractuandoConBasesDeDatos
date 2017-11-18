@@ -33,7 +33,6 @@ class EventManager {
   } // end of eliminarEvento
 
   addEvent() {
-    alert('entre aqui');
     var eventData = {};
     eventData.title = $('#titulo').val();
     eventData.startDate = $('#start_date').val();
@@ -43,9 +42,9 @@ class EventManager {
       eventData.endHour = $('#end_hour').val();
       eventData.startHour = $('#start_hour').val();
     } else {
-      eventData.end_date = "";
-      eventData.end_hour = "";
-      eventData.start_hour = "";
+      eventData.endDate = "";
+      eventData.endHour = "";
+      eventData.startHour = "";
     }
 
     $.post('/events/new', eventData, function(response) {
@@ -60,51 +59,41 @@ class EventManager {
   } // end of addEvent
 
   updateEvent(event) {
+    var eventData = {};
+    eventData.id = event.id;
+    var start = $.fullCalendar.moment(event.start).format('YYYY-MM-DD HH:mm:ss'),
+    end = $.fullCalendar.moment(event.end).format('YYYY-MM-DD HH:mm:ss');
 
-    console.log(event);
-    console.log(event.id);
-    let id = event.id,
-    start = $.fullCalendar.moment(event.start).format('YYYY-MM-DD HH:mm:ss'),
-    end = $.fullCalendar.moment(event.end).format('YYYY-MM-DD HH:mm:ss'),
-    form_data = new FormData(),
-    start_date,
-    end_date,
-    start_hour,
-    end_hour;
-    var full_day;
+    eventData.startDate = start.substr(0,10);
+    eventData.endDate = end.substr(0,10);
+    eventData.startHour = start.substr(11,8);
+    eventData.endHour = end.substr(11,8);
 
-    start_date = start.substr(0,10);
-    end_date = end.substr(0,10);
-    start_hour = start.substr(11,8);
-    end_hour = end.substr(11,8);
-
-    if (!hasNumbers(end_date) && !hasNumbers(end_hour)) {
-      full_day = true;
+    if (!hasNumbers(eventData.endDate) && !hasNumbers(eventData.endHour)) {
+      eventData.fullDay = true;
+      eventData.endDate = "";
+      eventData.endHour = "";
+      // eventData.startHour = "";
     } else {
-      full_day = false;
+      eventData.fullDay = false;
     }
 
-    form_data.append('id', id);
-    form_data.append('start_date', start_date);
-    form_data.append('end_date', end_date);
-    form_data.append('start_hour', start_hour);
-    form_data.append('end_hour', end_hour);
-    form_data.append('full_day', full_day);
+    console.log('This is the eventData');
+    console.log(eventData);
 
     $.ajax({
-      url: '/events/update/' + form_data.get('id'),
+      url: '/event/' + eventData.id,
       dataType: "json",
-      cache: false,
-      processData: false,
-      contentType: false,
-      data: form_data,
-      type: 'POST',
+      // cache: false,
+      // processData: false,
+      // contentType: false,
+      data: eventData,
+      type: 'PUT',
       success: (data) =>{
-        if (data.message =="OK") {
-          alert('Se ha actualizado el evento exitosamente');
-        }else {
-          alert(data.message);
+        if (data.message == "OK") {
           alert(data.description);
+        }else {
+          alert('The post could not be updated...');
         }
       },
       error: function(data){
@@ -124,7 +113,7 @@ class EventManager {
         center: 'title',
         right: 'month,agendaWeek,basicDay'
       },
-      defaultDate: '2017-10-01',
+      defaultDate: new Date(),
       navLinks: true,
       editable: true,
       eventLimit: true,
@@ -252,7 +241,7 @@ class EventManager {
   function initForm(){
     $('#start_date, #titulo, #end_date').val('');
     $('#start_date, #end_date').datepicker({
-      dateFormat: "mm-dd-yy"
+      dateFormat: "yy-mm-dd"
     });
     $('.timepicker').timepicker({
       timeFormat: 'H:i:s',
