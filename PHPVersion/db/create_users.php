@@ -11,7 +11,7 @@ if ($mysqli->connect_errno) {
 $users[] = [
   'email' => 'danielmarcanodev@gmail.com',
   'full_name' => 'Daniel Marcano',
-  'pwd' => '123456789',
+  'pwd' => 'soyelmejor',
   'birth_date' => '1996-12-19'
 ];
 
@@ -25,7 +25,7 @@ $users[] = [
 $users[] = [
   'email' => 'lafantasma@gmail.com',
   'full_name' => 'Gladys Carrero',
-  'pwd' => 'soydoctora',
+  'pwd' => 'soylamejor',
   'birth_date' => '1960-10-12'
 ];
 

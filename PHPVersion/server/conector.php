@@ -118,7 +118,6 @@ class ConnectDB {
 
     $sql = "UPDATE eventos SET {$event_values} WHERE usuario_id = {$event['usuario_id']} AND id = {$event['id']}";
 
-    // return $sql;
     return $this->run_query($sql);
   }
 
