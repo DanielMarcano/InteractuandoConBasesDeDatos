@@ -21,7 +21,8 @@ var newUser = new User({
 newUser.save(function(err) {
   if (err) {
     console.log('The user could not be saved...');
+  } else {
+    console.log('The user was successfully saved!');    
   }
-  console.log('The user was successfully saved!');
   connection.close();
 });
