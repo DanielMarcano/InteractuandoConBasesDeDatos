@@ -33,43 +33,28 @@ body {
   align-items: center;
 }
 
-.calendarDataContainer {
-  width: 70%;
-  font-family: 'Kaushan Script', cursive;
-  font-family: 'Neucha', cursive;
-  display: flex;
-  flex-direction: column;
-}
-
 .dataContainer {
   display: flex;
   width: 100%;
-  height: 95%;
-  flex-direction: row;
-}
-
-.mainCalendarContainer {
-  /*width: 100%;*/
-  /*height: 100%;*/
+  height: 100%;
+  flex-direction: row-reverse;
   background: rgba(0, 0, 0, 0.5);
 }
 
-.calendarContainer {
-  /*width: 70%;
-  height: 100%;*/
-  margin: 8px;
-  color: #FFFFFF;
+.calendarDataContainer {
+  font-family: 'Kaushan Script', cursive;
+  font-family: 'Neucha', cursive;
+  flex-basis: 60%;
 }
 
 .formContainer {
-  width: 30%;
-  height: 100%;
   background: rgba(0, 0, 0, 0.7);
   font-family: 'Neucha', cursive;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-basis: 40%;
 }
 
 .formTitle {
@@ -182,8 +167,9 @@ input {
 }
 
 .delete {
-  width: 100%;
-  height: 15%;
+  width: 80%;
+  padding: 1em;
+  height: auto;
   display: flex;
   background-color: #8B0913;
   align-items: center;
@@ -194,8 +180,8 @@ input {
 }
 
 .delete img {
-  height: 100%;
-  max-width: 50px;
+  height: 30px;
+  max-width: 30px;
 }
 
 .logout-container {

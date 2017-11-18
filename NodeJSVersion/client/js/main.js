@@ -5,9 +5,7 @@
 /*
 * Checks whether a string contains digits or not
 */
-checkLogin(function() {
-  eventManager.poblarCalendario();
-});
+
 function hasNumbers(t) {
   var regex = /\d/g;
   return regex.test(t);
