@@ -1,4 +1,13 @@
+/**
+** @author Daniel Marcano <danielmarcanodev@gmail.com>
+**/
 
+/*
+* Checks whether a string contains digits or not
+*/
+checkLogin(function() {
+  eventManager.poblarCalendario();
+});
 function hasNumbers(t) {
   var regex = /\d/g;
   return regex.test(t);
@@ -6,7 +15,7 @@ function hasNumbers(t) {
 
 class EventManager {
 
-  eliminarEvento(event, jsEvent){
+  deleteEvent(event, jsEvent){
     $.ajax({
       url: '/event/' + event.id,
       dataType: "json",
@@ -17,27 +26,22 @@ class EventManager {
       type: 'DELETE',
       success: (data) =>{
         if (data.message == "OK") {
-          alert('Se ha eliminado el evento exitosamente');
-        }else {
-          alert(data.message);
+          alert(data.description);
+        } else {
           alert(data.description);
         }
-      },
-      error: function(data){
-        alert("error en la comunicación con el servidor");
-        console.log(data);
       }
     });
-    $('.delete').find('img').attr('src', "img/trash.png");
+    $('.delete').find('img').attr('src', "../img/trash.png");
     $('.delete').css('background-color', '#8B0913');
-  } // end of eliminarEvento
+  } // end of deleteEvent
 
   addEvent() {
     var eventData = {};
     eventData.title = $('#titulo').val();
     eventData.startDate = $('#start_date').val();
     eventData.fullDay = $('#allDay').prop('checked');
-    if (!$('#allDay').prop('checked')) {
+    if (!eventData.fullDay) {
       eventData.endDate = $('#end_date').val();
       eventData.endHour = $('#end_hour').val();
       eventData.startHour = $('#start_hour').val();
@@ -47,13 +51,12 @@ class EventManager {
       eventData.startHour = "";
     }
 
-    $.post('/events/new', eventData, function(response) {
-      // console.log(response);
+    $.post('/event/', eventData, function(response) {
       if (response.message == 'OK') {
         $('.calendario').fullCalendar('refetchEvents');
-        alert(response.message);
+        alert(response.description);
       } else {
-        alert(response.message);
+        alert(response.description);
       }
     });
   } // end of addEvent
@@ -73,38 +76,24 @@ class EventManager {
       eventData.fullDay = true;
       eventData.endDate = "";
       eventData.endHour = "";
-      // eventData.startHour = "";
     } else {
       eventData.fullDay = false;
     }
 
-    console.log('This is the eventData');
-    console.log(eventData);
-
     $.ajax({
       url: '/event/' + eventData.id,
       dataType: "json",
-      // cache: false,
-      // processData: false,
-      // contentType: false,
       data: eventData,
       type: 'PUT',
-      success: (data) =>{
+      success: (data) => {
         if (data.message == "OK") {
           alert(data.description);
         }else {
-          alert('The post could not be updated...');
+          alert(data.description);
         }
-      },
-      error: function(data){
-        console.log('Error in updateEvent');
-        console.log(data);
-        alert("error en la comunicación con el servidor en updateEvent");
       }
     });
   } // end of updateEvent
-
-
 
   poblarCalendario() {
     $('.calendario').fullCalendar({
@@ -113,6 +102,7 @@ class EventManager {
         center: 'title',
         right: 'month,agendaWeek,basicDay'
       },
+      handleWindowResize: true,
       defaultDate: new Date(),
       navLinks: true,
       editable: true,
@@ -135,22 +125,17 @@ class EventManager {
         type: 'GET',
         success: (data) => {
           if (data.message == 'OK') {
-            console.log(data.events);
             return data.events;
           } else {
-            alert(data.message);
+            alert(data.description);
           }
-        },
-        error: function(data){
-          console.log("Error trying to fetch all the events");
-          console.log(data);
         }
       },
       eventDragStart: (event,jsEvent) => {
-        $('.delete').find('img').attr('src', "img/trash-open.png");
+        $('.delete').find('img').attr('src', "../img/trash-open.png");
         $('.delete').css('background-color', '#a70f19');
       },
-      eventDragStop: (event,jsEvent) =>{
+      eventDragStop: (event, jsEvent) =>{
         var trashEl = $('.delete');
         var ofs = trashEl.offset();
         var x1 = ofs.left;
@@ -159,21 +144,16 @@ class EventManager {
         var y2 = ofs.top + trashEl.outerHeight(true);
         if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
           jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-            this.eliminarEvento(event, jsEvent);
+            this.deleteEvent(event, jsEvent);
             $('.calendario').fullCalendar('removeEvents', event.id);
           }
-
         }
       });
     } // end of poblarCalendario
 
-
-
   } // End of EventManager
 
   $(function(){
-    // checkLogin();
-
     initForm();
 
     const eventManager = new EventManager();
@@ -196,30 +176,6 @@ class EventManager {
     });
   });
 
-  // function checkLogin(callback) {
-  //   $.ajax({
-  //     url: '/checkLogin',
-  //     dataType: "json",
-  //     cache: false,
-  //     processData: false,
-  //     contentType: false,
-  //     type: 'GET',
-  //     success: (data) => {
-  //       if (data.message == 'error') {
-  //         alert('You must log in before...');
-  //         window.location.href = 'index.html';
-  //       } else {
-  //         callback();
-  //       }
-  //     },
-  //     error: (data) => {
-  //       console.log('error');
-  //       console.log(data);
-  //       alert("Error en la comunicación con el servidor en checkLogin");
-  //     }
-  //   });
-  // } // end of checkLogin
-
   function logOut() {
     $.ajax({
       url: '/logout',
@@ -228,12 +184,9 @@ class EventManager {
       processData: false,
       contentType: false,
       type: 'GET',
-      success: (data) =>{
-        alert(data.message);
+      success: (data) => {
+        alert(data.description);
         window.location.href = 'index.html';
-      },
-      error: function(){
-        alert("Error when trying to log out");
       }
     });
   } // end of logOut
@@ -256,8 +209,8 @@ class EventManager {
     });
     $('#allDay').on('change', function(){
       if (this.checked) {
-        $('.timepicker, #end_date').attr("disabled", "disabled");
-      }else {
+        $('.timepicker, #end_date').attr('disabled', 'disabled');
+      } else {
         $('.timepicker, #end_date').removeAttr("disabled");
       }
     });
@@ -274,7 +227,6 @@ class EventManager {
   function checkLogin(callback) {
     $.get('/login', function(response) {
       if (response.message != 'OK') {
-        alert(response.message);
         window.location.href = 'index.html';
       } else {
         callback();

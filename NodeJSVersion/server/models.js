@@ -1,9 +1,18 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
-var connection = mongoose.createConnection('mongodb://localhost/NodeJSCalendar');
+/**
+ ** @author Daniel Marcano <danielmarcanodev@gmail.com>
+ **/
+
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    autoIncrement = require('mongoose-auto-increment'),
+    connection = mongoose.createConnection('mongodb://localhost/NodeJSCalendar');
 
 autoIncrement.initialize(connection);
+
+/*
+ * The user's model
+ */
+
 var UserSchema = new Schema({
   username: {
     type: String,
@@ -16,14 +25,17 @@ var UserSchema = new Schema({
   }
 });
 
-// UserSchema.plugin(autoIncrement.plugin, 'User');
 UserSchema.plugin(autoIncrement.plugin, {
     model: 'User',
     startAt: 0
 });
-var User = connection.model('User', UserSchema);
 
-exports.User = User;
+exports.User = connection.model('User', UserSchema);
+
+
+/*
+ * The event's model
+ */
 
 var EventSchema = new Schema({
   userId: {
@@ -48,11 +60,9 @@ var EventSchema = new Schema({
   }
 });
 
-// EventSchema.plugin(autoIncrement.plugin, 'Event');
 EventSchema.plugin(autoIncrement.plugin, {
   model: 'Event',
   startAt: 0
 });
-var EventModel = connection.model('Event', EventSchema);
 
-exports.EventModel = EventModel;
+exports.EventModel = connection.model('Event', EventSchema);
